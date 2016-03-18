@@ -224,21 +224,7 @@
 			});
 
 			$("#submit").on("click",function(){
-				vehicleno = $("#vehicleno").val();
-				if( vehicleno == ""){
-					alert("select vehicleno");
-					return false;
-				}
-				state = $("#statename").val();
-				if(state != undefined && state == ""){
-					alert("select state");
-					return false;
-				}
-				fuelstationname = $("#fuelstationname").val();
-				if(fuelstationname != undefined && fuelstationname == ""){
-					alert("select fuelstationname");
-					return false;
-				}
+				
 				var statename = $("#statename").val();
 				if(statename != undefined && statename ==""){
 					alert("Please select statename");

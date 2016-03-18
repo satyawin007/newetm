@@ -149,7 +149,7 @@
 					<div class="clearfix">
 						<div class="col-md-offset-0 col-md-12 form-actions" style="margin: 0px">
 							<div class="col-md-offset-4 col-md-5">
-							<button id="submit" class="btn primary" type="submit">
+							<button id="submit" class="btn primary" type="submit" id="submit">
 								<i class="ace-icon fa fa-check bigger-110"></i>
 								SUBMIT
 							</button>

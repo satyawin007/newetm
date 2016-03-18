@@ -100,9 +100,9 @@ class OfficeBranchController extends \Controller {
 		
 		$tabs = array();
 		$form_fields = array();
-		$form_field = array("name"=>"statename", "content"=>"state name", "readonly"=>"",  "required"=>"required", "type"=>"select", "action"=>array("type"=>"onChange", "script"=>"changeState(this.value);"), "class"=>"form-control", "options"=>$state_arr);
+		$form_field = array("name"=>"statename", "content"=>"state name", "readonly"=>"",  "required"=>"required", "type"=>"select", "action"=>array("type"=>"onChange", "script"=>"changeState(this.value);"), "class"=>"form-control chosen-select", "options"=>$state_arr);
 		$form_fields[] = $form_field;
-		$form_field = array("name"=>"cityname", "content"=>"city name", "readonly"=>"",  "required"=>"required", "type"=>"select", "class"=>"form-control", "options"=>array());
+		$form_field = array("name"=>"cityname", "content"=>"city name", "readonly"=>"",  "required"=>"required", "type"=>"select", "class"=>"form-control chosen-select", "options"=>array());
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"officebranchname", "content"=>"office branch name", "readonly"=>"",  "required"=>"required","type"=>"text", "class"=>"form-control");
 		$form_fields[] = $form_field;
@@ -127,9 +127,9 @@ class OfficeBranchController extends \Controller {
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"agreementexpdate", "content"=>"agreement exp date", "readonly"=>"",  "required"=>"required","type"=>"text", "class"=>"form-control date");
 		$form_fields[] = $form_field;
-		$form_field = array("name"=>"paymenttype", "content"=>"payment type", "readonly"=>"",  "required"=>"required", "type"=>"select", "options"=>$pmttype_arr, "class"=>"form-control");
+		$form_field = array("name"=>"paymenttype", "content"=>"payment type", "readonly"=>"",  "required"=>"required", "type"=>"select", "options"=>$pmttype_arr, "class"=>"form-control chosen-select");
 		$form_fields[] = $form_field;
-		$form_field = array("name"=>"bankaccount", "content"=>"bank account", "readonly"=>"",  "required"=>"required","type"=>"select", "options"=>$bank_arr, "class"=>"form-control");
+		$form_field = array("name"=>"bankaccount", "content"=>"bank account", "readonly"=>"",  "required"=>"required","type"=>"select", "options"=>$bank_arr, "class"=>"form-control chosen-select");
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"paymentexpecteday", "content"=>"payment expected day [1-30]", "readonly"=>"",  "required"=>"required","type"=>"text", "class"=>"form-control");
 		$form_fields[] = $form_field;
