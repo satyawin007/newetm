@@ -272,6 +272,8 @@
 					//Note: if you are applying horizontal scrolling (sScrollX) on a ".table-bordered"
 					//you may want to wrap the table inside a "div.dataTables_borderWrap" element
 			
+					//"iDisplayLength": 50
+			
 			
 					select: {
 						style: 'multi'
@@ -344,8 +346,6 @@
 					}
 					$('.dt-button-collection').appendTo('.tableTools-container .dt-buttons')
 				});
-			
-				////
 			
 				////
 			

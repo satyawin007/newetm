@@ -165,21 +165,6 @@
 				$("#id1").val(id);
 				return;				
 			}
-
-			$("#submit").on("click",function(){
-				vehicleno = $("#vehicleno").val();
-				if(vehicleno != undefined && vehicleno == ""){
-					alert("select vehicleno");
-					return false;
-				}
-				fuelstationname = $("#fuelstationname").val();
-				if(fuelstationname != undefined && fuelstationname == ""){
-					alert("select fuelstationname");
-					return false;
-				}
-			
-				$("#paginate").submit();
-			});
 			
 			<?php 
 				if(Session::has('message')){

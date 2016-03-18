@@ -13,7 +13,7 @@
 
 Route::get('/', function()
 {
-	return View::make('masters');
+	return View::make('masters.login');
 });
 
 Route::get('/logout', function()
@@ -134,8 +134,6 @@ Route::get('/addemployee', function()
 Route::get('/getempid',"masters\EmployeeController@getEmpId");
 
 Route::post('/addemployee',"masters\EmployeeController@addEmployee");
-
-Route::post('/employee',"masters\EmployeeController@manageEmployees");
 
 Route::get('/editemployee',"masters\EmployeeController@editEmployee");
 

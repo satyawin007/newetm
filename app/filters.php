@@ -23,7 +23,7 @@ App::before(function($request)
 
 App::after(function($request, $response)
 {
-	/*if(Session::has("email_message")){
+	/* if(Session::has("email_message")){
 		$data = Session::get("email_message");
 		Mail::queue('emails.welcome', $data, function($message)
 		{
@@ -31,7 +31,7 @@ App::after(function($request, $response)
 			$message->to('rayisatyanarayana22@gmail.com', 'Satya')->subject($subject);
 		});
 		Session::forget('email_message');
-	}*/
+	} */
 });
 
 /*

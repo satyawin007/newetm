@@ -317,19 +317,14 @@ private function getProvider($values, $length, $start){
 		$search = $_REQUEST["search"];
 		$search = $search['value'];
 		if($search != ""){
-			$cities_arr = array();
-			$cities = \City::where("name", "like", "%$search%")->get();
-			foreach ($cities as $city){
-				$cities_arr[] = $city->id;
-			}
-			$entities = \OfficeBranch::where("officebranch.name", "like", "%$search%")->orWhereIn("officebranch.cityId", $cities_arr)->leftjoin("rentdetails", "rentdetails.officeBranchId", "=", "officebranch.id")->join("states","states.id", "=", "officebranch.stateId")->join("cities","cities.id", "=", "officebranch.cityId")->select($select_args)->limit($length)->offset($start)->get();
+			$entities = \OfficeBranch::where("officebranch.name", "like", "%$search%")->leftjoin("rentdetails", "rentdetails.officeBranchId", "=", "officebranch.id")->join("states","states.id", "=", "officebranch.stateId")->join("cities","cities.id", "=", "officebranch.cityId")->select($select_args)->limit($length)->offset($start)->get();
 			foreach($entities as $entry){
 				if($entry["occupiedDate"] != "0000-00-00" &&  $entry["occupiedDate"] != "" )
 					$entry["occupiedDate"] = date("d-m-Y", strtotime($entry["occupiedDate"]));
 				if($entry["expDate"] != "0000-00-00" &&  $entry["expDate"] != "" )
 					$entry["expDate"] = date("d-m-Y", strtotime($entry["expDate"]));
 			}
-			$total = \OfficeBranch::where("officebranch.name", "like", "%$search%")->orWhereIn("officebranch.cityId", $cities_arr)->count();
+			$total = count($entities);
 		}
 		else{
 			$entities = \OfficeBranch::leftjoin("rentdetails", "rentdetails.officeBranchId", "=", "officebranch.id")->join("states","states.id", "=", "officebranch.stateId")->join("cities","cities.id", "=", "officebranch.cityId")->select($select_args)->limit($length)->offset($start)->get();
@@ -526,13 +521,8 @@ private function getProvider($values, $length, $start){
 		$search = $_REQUEST["search"];
 		$search = $search['value'];
 		if($search != ""){
-			$veh_type_arr = array();
-			$veh_types = \LookupTypeValues::where("name","like","%$search%")->get();
-			foreach($veh_types as $veh_type){
-				$veh_type_arr[] = $veh_type->id;
-			}
-			$entities = \Vehicle::where("veh_reg", "like", "%$search%")->orWhereIn("vehicle.vehicle_type",$veh_type_arr)->where("vehicle.status","=","ACTIVE")->orwhere("vehicle.status","=","INACTIVE")->leftjoin("lookuptypevalues","lookuptypevalues.id", "=", "vehicle.vehicle_type")->select($select_args)->limit($length)->offset($start)->get();
-			$total = \Vehicle::where("veh_reg", "like", "%$search%")->orWhereIn("vehicle.vehicle_type",$veh_type_arr)->where("vehicle.status","=","ACTIVE")->where("vehicle.status","=","ACTIVE")->orwhere("vehicle.status","=","INACTIVE")->count();
+			$entities = \Vehicle::where("veh_reg", "like", "%$search%")->where("vehicle.status","=","ACTIVE")->orwhere("vehicle.status","=","INACTIVE")->leftjoin("lookuptypevalues","lookuptypevalues.id", "=", "vehicle.vehicle_type")->select($select_args)->limit($length)->offset($start)->get();
+			$total = \Vehicle::where("veh_reg", "like", "%$search%")->where("vehicle.status","=","ACTIVE")->orwhere("vehicle.status","=","INACTIVE")->count();
 			foreach ($entities as $entity){
 				$entity->yearof_pur = date("d-m-Y",strtotime($entity->yearof_pur));
 			}
@@ -615,13 +605,8 @@ private function getProvider($values, $length, $start){
 			foreach($citieids as $cityid){
 				$citieids_arr[] = $cityid->id;
 			}
-			$veh_type_arr = array();
-			$veh_types = \LookupTypeValues::where("name","like","%$search%")->get();
-			foreach($veh_types as $veh_type){
-				$veh_type_arr[] = $veh_type->id;
-			}
-			$entities = \EmployeeBatta::wherein("sourceCity", $citieids_arr)->orwherein("employeebatta.vehicleTypeId", $veh_type_arr)->leftjoin("cities","cities.id","=","employeebatta.sourceCity")->join("cities as cities1","cities1.id","=","employeebatta.destinationCity")->leftjoin("lookuptypevalues", "employeebatta.vehicleTypeId", "=", "lookuptypevalues.id")->select($select_args)->limit($length)->offset($start)->get();
-			$total = \EmployeeBatta::wherein("sourceCity", $citieids_arr)->orwherein("employeebatta.vehicleTypeId", $veh_type_arr)->count();
+			$entities = \EmployeeBatta::wherein("sourceCity", $citieids_arr)->leftjoin("cities","cities.id","=","employeebatta.sourceCity")->join("cities as cities1","cities1.id","=","employeebatta.destinationCity")->leftjoin("lookuptypevalues", "employeebatta.vehicleTypeId", "=", "lookuptypevalues.id")->select($select_args)->limit($length)->offset($start)->get();
+			$total = \EmployeeBatta::wherein("sourceCity", $citieids_arr)->leftjoin("cities","cities.id","=","employeebatta.sourceCity")->join("cities as cities1","cities1.id","=","employeebatta.destinationCity")->leftjoin("lookuptypevalues", "employeebatta.vehicleTypeId", "=", "lookuptypevalues.id")->count();
 		}
 		else{
 			$entities = \EmployeeBatta::leftjoin("cities","cities.id","=","employeebatta.sourceCity")->join("cities as cities1","cities1.id","=","employeebatta.destinationCity")->leftjoin("lookuptypevalues", "employeebatta.vehicleTypeId", "=", "lookuptypevalues.id")->select($select_args)->limit($length)->offset($start)->get();
@@ -678,8 +663,8 @@ private function getProvider($values, $length, $start){
 			foreach($citieids as $cityid){
 				$citieids_arr[] = $cityid->id;
 			}
-			$entities = \ServiceDetails::wherein("sourceCity", $citieids_arr)->orwhere("serviceNo", "like","%$search%")->join("cities","cities.id","=","servicedetails.sourceCity")->join("cities as cities1","cities1.id","=","servicedetails.destinationCity")->select($select_args)->limit($length)->offset($start)->get();
-			$total = \ServiceDetails::wherein("sourceCity", $citieids_arr)->orwhere("serviceNo", "like","%$search%")->count();;
+			$entities = \ServiceDetails::wherein("sourceCity", $citieids_arr)->join("cities","cities.id","=","servicedetails.sourceCity")->join("cities as cities1","cities1.id","=","servicedetails.destinationCity")->select($select_args)->limit($length)->offset($start)->get();
+			$total = \ServiceDetails::wherein("sourceCity", $citieids_arr)->join("cities","cities.id","=","servicedetails.sourceCity")->join("cities as cities1","cities1.id","=","servicedetails.destinationCity")->count();;
 		}
 		else{
 			$entities = \ServiceDetails::join("cities","cities.id","=","servicedetails.sourceCity")->join("cities as cities1","cities1.id","=","servicedetails.destinationCity")->select($select_args)->limit($length)->offset($start)->get();
@@ -729,7 +714,7 @@ private function getProvider($values, $length, $start){
 			foreach($bankids as $bankid){
 				$bankids_arr[] = $bankid->id;
 			}
-			$entities = \BankDetails::wherein("bankName", $bankids_arr)->leftjoin("lookuptypevalues","lookuptypevalues.id","=","bankdetails.bankName")->leftjoin("lookuptypevalues as lookuptypevalues1","lookuptypevalues1.id","=","bankdetails.accountType")->select($select_args)->limit($length)->offset($start)->get();
+			$entities = \BankDetails::wherein("bankName", $bankids_arr)->select($select_args)->limit($length)->offset($start)->get();
 			$total = \BankDetails::wherein("bankName", $bankids_arr)->count();;
 		}
 		else{
@@ -786,12 +771,7 @@ private function getProvider($values, $length, $start){
 		$search = $_REQUEST["search"];
 		$search = $search['value'];
 		if($search != ""){
-			$cities_arr = array();
-			$cities = \City::where("name", "like", "%$search%")->get();
-			foreach ($cities as $city){
-				$cities_arr[] = $city->id;
-			}
-			$entities = \FinanceCompany::where("financecompanies.name", "like", "%$search%")->orWhereIn("financecompanies.cityId", $cities_arr)->join("cities","cities.id","=","financecompanies.cityId")->join("states","states.id","=","financecompanies.stateId")->select($select_args)->limit($length)->offset($start)->get();
+			$entities = \FinanceCompany::where("financecompanies.name", "like", "%$search%")->join("cities","cities.id","=","financecompanies.cityId")->join("states","states.id","=","financecompanies.stateId")->select($select_args)->limit($length)->offset($start)->get();
 			$total = \FinanceCompany::where("name", "like", "%$search%")->count();
 		}
 		else{
@@ -849,12 +829,7 @@ private function getProvider($values, $length, $start){
 		$search = $_REQUEST["search"];
 		$search = $search['value'];
 		if($search != ""){
-			$cities_arr = array();
-			$cities = \City::where("name", "like", "%$search%")->get();
-			foreach ($cities as $city){
-				$cities_arr[] = $city->id;
-			}
-			$entities = \CreditSupplier::where("supplierName", "like", "%$search%")->orWhereIn("creditsuppliers.cityId", $cities_arr)->join("cities","cities.id","=","creditsuppliers.cityId")->select($select_args)->limit($length)->offset($start)->get();
+			$entities = \CreditSupplier::where("supplierName", "like", "%$search%")->join("cities","cities.id","=","creditsuppliers.cityId")->select($select_args)->limit($length)->offset($start)->get();
 			foreach ($entities as $entity){
 				$bank =  \BankDetails::where("bankdetails.id", "=", $entity->bankAccount)->join("lookuptypevalues","lookuptypevalues.id","=","bankdetails.bankName")->select("bankdetails.id as id", "bankdetails.accountNo as accountNo", "lookuptypevalues.name as name")->get();
 				if(count($bank)>0){
@@ -862,7 +837,7 @@ private function getProvider($values, $length, $start){
 					$entity->bankAccount = $bank->name." - ".$bank->accountNo;
 				}
 			}
-			$total = \CreditSupplier::where("supplierName", "like", "%$search%")->orWhereIn("creditsuppliers.cityId", $cities_arr)->count();
+			$total = \CreditSupplier::where("supplierName", "like", "%$search%")->count();
 		}
 		else{
 			$entities = \CreditSupplier::join("cities","cities.id","=","creditsuppliers.cityId")->select($select_args)->limit($length)->offset($start)->get();
@@ -991,12 +966,7 @@ private function getProvider($values, $length, $start){
 		$search = $_REQUEST["search"];
 		$search = $search['value'];
 		if($search != ""){
-			$cities_arr = array();
-			$cities = \City::where("name", "like", "%$search%")->get();
-			foreach ($cities as $city){
-				$cities_arr[] = $city->id;
-			}
-			$entities = \FuelStation::where("fuelstationdetails.name","like","%$search%")->orWhereIn("fuelstationdetails.cityId",$cities_arr)->join("cities","cities.id","=","fuelstationdetails.cityId")->join("states","states.id","=","fuelstationdetails.stateId")->join("bankdetails","bankdetails.id","=","fuelstationdetails.bankAccount")->select($select_args)->limit($length)->offset($start)->get();;
+			$entities = \FuelStation::where("fuelstationdetails.name","like","%$search%")->join("cities","cities.id","=","fuelstationdetails.cityId")->join("states","states.id","=","fuelstationdetails.stateId")->join("bankdetails","bankdetails.id","=","fuelstationdetails.bankAccount")->select($select_args)->limit($length)->offset($start)->get();;
 			$total = \FuelStation::where("fuelstationdetails.name","like","%$search%")->count();
 			foreach ($entities as $entity){
 				$bank =  \BankDetails::where("bankdetails.bankName", "=", $entity->bankAccount)->join("lookuptypevalues","lookuptypevalues.id","=","bankdetails.bankName")->select("bankdetails.id as id", "bankdetails.accountNo as accountNo", "lookuptypevalues.name as name")->get();
